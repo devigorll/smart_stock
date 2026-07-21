@@ -131,51 +131,62 @@ with tab5:
     Nesta seção, você pode cadastrar novos produtos e gerenciar as informações dos produtos existentes.
     """)
 
-with st.form("cadastro_produto"):
+    with st.form("cadastro_produto"):
 
-    nome_produto = st.text_input("Nome do Produto")
+        nome_produto = st.text_input("Nome do Produto")
 
-    sucesso, lojas = fn.consulta_lojas()
+        sucesso, lojas = fn.consulta_lojas()
 
-    if sucesso:
+        # Valida se a consulta deu certo E se veio alguma loja na lista
+        if sucesso and lojas:
+            loja_selecionada = st.selectbox(
+                "Loja do Produto",
+                options=lojas,
+                format_func=lambda loja: loja["nome_loja"]
+            )
+            # O selectbox retorna o dicionário selecionado
+            id_loja = loja_selecionada["id_loja"] if loja_selecionada else None
+        else:
+            if not sucesso:
+                st.error(f"Erro ao buscar lojas: {lojas}")
+            else:
+                st.warning("Nenhuma loja cadastrada no sistema.")
+            id_loja = None
 
-        loja_selecionada = st.selectbox(
-            "Loja do Produto",
-            options=lojas,
-            format_func=lambda loja: loja["nome_loja"]
+        quantidade_ideal = st.number_input(
+            "Quantidade Ideal do Produto",
+            min_value=1,
+            step=1
         )
 
-        id_loja = loja_selecionada["id_loja"]
+        quantidade_atual = st.number_input(
+            "Quantidade Atual do Produto",
+            min_value=0,
+            step=1
+        )
 
-    else:
+        submit_produto = st.form_submit_button("Cadastrar Produto")
 
-        st.error(lojas)
-        id_loja = None
+        if submit_produto:
+            # 1. Verifica se o nome do produto não está vazio (strip remove espaços acidentais)
+            if not nome_produto.strip():
+                st.error("Insira o nome do produto.")
 
-    quantidade_ideal = st.number_input(
-        "Quantidade Ideal do Produto",
-        min_value=1,
-        step=1
-    )
+            # 2. Verifica se uma loja válida foi carregada e selecionada
+            elif id_loja is None:
+                st.error("Selecione uma loja válida antes de cadastrar.")
 
-    quantidade_atual = st.number_input(
-        "Quantidade Atual do Produto",
-        min_value=0,
-        step=1
-    )
+            else:
+                dados_produto = {
+                    "Produto": nome_produto.strip(),
+                    "ID loja": id_loja,
+                    "Quantidade ideal": quantidade_ideal,
+                    "Quantidade atual": quantidade_atual
+                }
 
-    submit_produto = st.form_submit_button("Cadastrar Produto")
-
-    if submit_produto:
-
-        if id_loja is None:
-            st.error("Não foi possível obter a lista de lojas.")
-        else:
-            st.write(f"Produto: {nome_produto}")
-            st.write(f"ID da Loja: {id_loja}")
-            st.write(f"Nome da Loja: {loja_selecionada['nome_loja']}")
-            st.write(f"Quantidade Ideal: {quantidade_ideal}")
-            st.write(f"Quantidade Atual: {quantidade_atual}")
-
-
-
+                sucesso, mensagem = fn.cadastra_produto(dados_produto)
+                
+                if sucesso:
+                    st.success(mensagem)
+                else:
+                    st.error(mensagem)

@@ -182,3 +182,62 @@ def consulta_lojas():
 
         if conn:
             conn.close()
+
+
+
+def cadastra_produto(dados_produto):
+    conn = conecta_banco()
+
+    if conn is None:
+        return False, "Não foi posível se conectar ao banco de dados."
+    
+    cursor = None
+    
+    try:
+
+        cursor = conn.cursor()
+
+        query = """
+        INSERT INTO produtos
+        (
+            nome_produto,
+            id_loja,
+            quantidade_ideal,
+            quantidade_real
+        )
+
+        VALUES
+        (
+            ?, ?, ?, ?
+        )
+        """
+
+        valores = (
+
+            dados_produto["Produto"],
+            dados_produto["ID loja"],
+            dados_produto["Quantidade ideal"],
+            dados_produto["Quantidade atual"]
+
+        )
+
+        cursor.execute(query, valores)
+
+        conn.commit()
+
+        return True, "Produto cadastrado com sucesso!"
+    
+    except pyodbc.Error as e:
+
+                return False, f"Erro ao cadastrar produto:\n{e}"
+    
+    finally:
+
+        if cursor:
+            cursor.close()
+
+        if conn:
+            conn.close()
+        
+
+
