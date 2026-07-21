@@ -1,0 +1,18 @@
+[theme]
+# Cor de destaque (a linha vermelha que você quer mudar)
+primaryColor = "#007BFF"
+
+# Cor de fundo da área principal
+backgroundColor = "#ffffff"
+
+# Cor de fundo secundária (se usar sidebar)
+secondaryBackgroundColor = "#F8F9FA"
+
+# Cor do texto
+textColor = "#212529"
+
+# Fonte do texto
+font = "sans serif"
+
+
+# Tirei o ponto para o arquivo não funcionar - (.streamlit)

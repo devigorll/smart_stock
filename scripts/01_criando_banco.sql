@@ -1,5 +1,5 @@
 USE MASTER;
-G
+GO
 
 CREATE DATABASE smartstock_db;
 GO
@@ -18,19 +18,9 @@ CREATE TABLE dono_loja (
 -- 2. TABELA CATEGORIA LOJA 
 CREATE TABLE categoria_loja (
 	id_categoria_loja INT IDENTITY(1,1) NOT NULL,
-	categoria_loja VARCHAR(30) NOT NULL,
+	categoria_loja VARCHAR(50) NOT NULL,
 
 	CONSTRAINT PK_Categoria_loja PRIMARY KEY (id_categoria_loja)
-)
-
--- 3. TABELA CATEGORIA PRODUTO 
-CREATE TABLE categoria_produto (
-	id_categoria_produto INT IDENTITY(1,1) NOT NULL,
-	nome_categoria_produto VARCHAR(30) NOT NULL,
-	id_categoria_loja INT NOT NULL,
-
-	CONSTRAINT PK_Categoria_produto PRIMARY KEY (id_categoria_produto),
-	CONSTRAINT FK_Categoria_loja FOREIGN KEY (id_categoria_loja) REFERENCES categoria_loja(id_categoria_loja)
 )
 
 -- 4. TABELA LOJA
@@ -58,25 +48,18 @@ CREATE TABLE produtos (
 	id_produto INT IDENTITY(1,1) NOT NULL,
 	nome_produto VARCHAR(50) NOT NULL,
 	id_loja INT NOT NULL,
-	id_categoria_produto INT NOT NULL,
 
 	quantidade_ideal INT NOT NULL,
 	quantidade_real INT NOT NULL,
 
 	CONSTRAINT PK_Produto PRIMARY KEY (id_produto),
 	CONSTRAINT FK_Loja FOREIGN KEY (id_loja) REFERENCES loja(id_loja),
-	CONSTRAINT FK_Categoria_produto_no_produto FOREIGN KEY (id_categoria_produto) REFERENCES categoria_produto(id_categoria_produto)
 )
 
 -- 6. TABELA CLIENTES
 CREATE TABLE clientes (
 	id_cliente INT IDENTITY(1,1) NOT NULL,
 	nome_cliente VARCHAR(50) NOT NULL,
-	
-	estado CHAR(2) NULL,
-	cidade VARCHAR(30) NULL,
-	bairro VARCHAR(30) NULL,
-	cep CHAR(8) NULL,
 
 	CONSTRAINT PK_Clientes PRIMARY KEY (id_cliente)
 )
